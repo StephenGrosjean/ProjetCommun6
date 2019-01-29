@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ally
   - Enemy
+  - Tile
   layers:
   - Default
   - TransparentFX
@@ -17,13 +18,13 @@ TagManager:
   - 
   - PostProcessing
   - NoRender
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Ally
+  - Enemy
+  - Tile
+  - Bullet
+  - BaseAlly
+  - BaseEnemy
+  - InCombat
   - 
   - 
   - 

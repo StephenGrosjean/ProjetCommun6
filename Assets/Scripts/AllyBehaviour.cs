@@ -9,15 +9,15 @@ public class AllyBehaviour : MonoBehaviour
 
     [SerializeField] private float speed, attackTimer;
     [SerializeField] private int attack;
-    [SerializeField] private GameManager gameManager;
-    [SerializeField] private Transform currentWayPoint, nextWayPoint;
-    [SerializeField] private GameObject currentEnemy;
-    [SerializeField] private states currentState;
 
-    [SerializeField] private Transform[] getWaypoints;
-    [SerializeField] private List<Transform> waypoints;
+    private GameManager gameManager;
+    private Transform currentWayPoint;
+    private GameObject currentEnemy;
+    private states currentState;
+    private Transform[] getWaypoints;
+    private List<Transform> waypoints = new List<Transform>();
 
-    [SerializeField] private int life = 100;
+    private int life = 100;
     public int Life {
         get { return life; }
         set { life = value; }
@@ -34,6 +34,7 @@ public class AllyBehaviour : MonoBehaviour
 
     void Start()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         rigid = GetComponent<Rigidbody>();
         collider = GetComponent<BoxCollider>();
 
@@ -51,6 +52,7 @@ public class AllyBehaviour : MonoBehaviour
     {
         if(currentEnemy == null) {
             collider.isTrigger = false;
+            rigid.constraints = RigidbodyConstraints.None;
             currentState = states.walking;
         }
 
@@ -73,7 +75,7 @@ public class AllyBehaviour : MonoBehaviour
             if (canAttack) {
                 canAttack = false;
                 StartCoroutine("AttackTimer");
-                currentEnemy.GetComponent<EnemyBehaviour>().Life -= attack;
+                currentEnemy.GetComponent<SoldierBehaviour>().Life -= attack;
             }
         }
     }
@@ -84,6 +86,7 @@ public class AllyBehaviour : MonoBehaviour
             currentState = states.combat;
             collider.isTrigger = true;
             currentEnemy.GetComponent<BoxCollider>().isTrigger = true;
+            rigid.constraints = RigidbodyConstraints.FreezeAll;
         }
     } 
 

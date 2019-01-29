@@ -10,14 +10,21 @@ public class Health : MonoBehaviour
     [SerializeField] private Material enemyMat, allyMat;
     [SerializeField] private float offset;
 
+    
     private int currentHealth;
     private SpriteRenderer spriteHealth;
-    
+
+    //Look at camera
+    private Transform target;
+    private float rotationSpeed = 10;
+    private Quaternion lookRotation;
+    private Vector3 direction;
 
     private int val = 10;
 
     void Start()
     {
+        target = Camera.main.transform;
         spriteHealth = GetComponent<SpriteRenderer>();
 
         if (entity.tag == "Enemy") {
@@ -31,19 +38,25 @@ public class Health : MonoBehaviour
                 go.GetComponent<MeshRenderer>().material = allyMat;
             }
         }
-
+        
         InvokeRepeating("ChangeLife", 0.5f, 0.5f);
     }
 
     void Update()
     {
         float step = 1 * Time.deltaTime;
-        if (entity.tag == "Enemy") {
-            currentHealth = entity.GetComponent<EnemyBehaviour>().Life;
+        if (entity.tag == "Enemy" || entity.tag == "Ally") {
+            currentHealth = entity.GetComponent<SoldierBehaviour>().Life;
         }
 
-        if (entity.tag == "Ally") {
-            currentHealth = entity.GetComponent<AllyBehaviour>().Life;
+        //Look at cam
+        direction = (new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position).normalized;
+        lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+        
+
+        if(currentHealth < 0.0f) {
+            Destroy(gameObject);
         }
     }
 
